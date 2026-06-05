@@ -3,123 +3,150 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>STaRC | Follow the Saliency</title>
-  <meta name="description" content="Project page for STaRC: Follow the Saliency: Supervised Saliency for Retrieval-augmented Dense Video Captioning." />
+  <title>Follow the Saliency | STaRC</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main>
-    <section class="hero">
-      <p class="venue">CVPR 2026</p>
-      <h1>Follow the Saliency:<br />Supervised Saliency for Retrieval-augmented Dense Video Captioning</h1>
-      <p class="subtitle">
-        STaRC uses saliency as a unified temporal signal for event segmentation,
-        retrieval, and dense video caption generation.
-      </p>
-      <div class="authors">
-        <span>H. S. Choi</span><span>·</span><span>Multimodal Learning Lab</span><span>·</span><span>Hanyang University</span>
+  <header class="hero">
+    <div class="container">
+      <p class="venue">Dense Video Captioning · Retrieval-Augmented DVC · Video Understanding</p>
+      <h1>Follow the Saliency:<br><span>Supervised Saliency for Retrieval-augmented Dense Video Captioning</span></h1>
+      <p class="authors">Seung hee Choi · MinJu Jeon · Hyunwoo Oh · Jihwan Lee · Dong-Jin Kim</p>
+      <p class="affiliation">Hanyang University</p>
+      <div class="links">
+        <a href="https://github.com/ermitaju1/STaRC" class="button">Code</a>
+        <a href="https://arxiv.org/abs/2603.11460" class="button">Paper</a>
+        <a href="#citation" class="button outline">BibTeX</a>
       </div>
-      <div class="buttons">
-        <a href="https://arxiv.org/abs/2603.11460" target="_blank" rel="noreferrer">Paper</a>
-        <a href="https://github.com/ermitaju1/STaRC" target="_blank" rel="noreferrer">Code</a>
-        <a href="https://drive.google.com/drive/folders/1CwqmRerzUuIIKdZ3bmj21agHsxpd_3ro?usp=sharing" target="_blank" rel="noreferrer">Model Weights</a>
-        <a href="https://drive.google.com/drive/folders/1Gbg_eXtoLE2x1eS_HaA268Hx7cDjodRG?usp=drive_link" target="_blank" rel="noreferrer">Datasets</a>
+      <figure class="figure teaser">
+        <img src="assets/images/teaser.png" alt="Teaser comparing heuristic implicit segmentation and supervised saliency-based explicit segmentation." />
+        <figcaption>Figure 1. STaRC uses supervised saliency to generate event-aligned segments, improving retrieval and caption generation.</figcaption>
+      </figure>
+      <p class="takeaway">STaRC learns frame-level saliency from event annotations and uses it as a unified signal for both retrieval and caption generation.</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="section" id="observation">
+      <div class="container">
+        <p class="section-kicker">Key Observation</p>
+        <h2>Better Segments Lead to Better Captions</h2>
+        <p class="lead">Retrieval-augmented DVC depends on the quality of temporal segmentation. When predicted segments align better with ground-truth event boundaries, the retrieved captions become more relevant and downstream caption quality improves consistently.</p>
+        <figure class="figure wide">
+          <img src="assets/images/correlation.png" alt="Correlation between segment quality and captioning performance." />
+          <figcaption>Segment-quality metrics such as Recall@0.5, Mean IoU, and Matched Segments are positively correlated with CIDEr, METEOR, SODA_c, and BLEU_4.</figcaption>
+        </figure>
       </div>
     </section>
 
-    <section class="section overview">
-      <div class="figure-placeholder">
-        <div>
-          <strong>STaRC Overview Figure</strong>
-          <p>Replace this block with your overview image, e.g. <code>assets/starc_overview.png</code>.</p>
+    <section class="section alt" id="method">
+      <div class="container">
+        <p class="section-kicker">Method Overview</p>
+        <h2>Saliency Training for Retrieval and Captioning</h2>
+        <p class="lead">STaRC first learns frame-level saliency from existing DVC event annotations. The learned saliency scores are then shared by two modules: SGSR for event-aligned retrieval and SaliP for saliency-aware decoding.</p>
+        <figure class="figure wide">
+          <img src="assets/images/overview.png" alt="Overview of the STaRC framework." />
+          <figcaption>Figure 3. STaRC unifies supervised saliency training, saliency-guided segmentation and retrieval, and saliency prompt-based caption generation.</figcaption>
+        </figure>
+        <div class="cards three">
+          <article class="card">
+            <h3>Supervised Saliency Learning</h3>
+            <p>Convert event boundaries into binary frame-level highlight labels and train a highlight detection module without extra annotation.</p>
+          </article>
+          <article class="card">
+            <h3>SGSR</h3>
+            <p>Use saliency-aware Optimal Transport clustering to form event-aligned retrieval segments and retrieve more relevant captions.</p>
+          </article>
+          <article class="card">
+            <h3>SaliP</h3>
+            <p>Project saliency scores into prompt tokens and inject them into the decoder for explicit temporal grounding.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="section two-col">
-      <div>
-        <p class="eyebrow">Abstract</p>
-        <h2>Why saliency?</h2>
-      </div>
-      <p>
-        Dense video captioning requires both accurate event localization and faithful caption generation.
-        STaRC treats saliency as a reusable temporal supervision signal: the same saliency distribution guides
-        segmentation, retrieval, and generation, reducing inconsistency between modules that otherwise rely on
-        separate temporal cues.
-      </p>
-    </section>
-
-    <section class="section">
-      <p class="eyebrow">Method</p>
-      <h2>Unified saliency-based design</h2>
-      <div class="method-grid">
-        <article>
-          <span>01</span>
-          <h3>Supervised Saliency Training</h3>
-          <p>Learn a saliency distribution from annotation-derived temporal supervision so highlight frames compete for probability mass.</p>
-        </article>
-        <article>
-          <span>02</span>
-          <h3>Saliency-Guided Segmentation</h3>
-          <p>Use saliency to generate event-like segments that better align with ground-truth event boundaries.</p>
-        </article>
-        <article>
-          <span>03</span>
-          <h3>Saliency-Aware Retrieval</h3>
-          <p>Retrieve captions or features around salient temporal regions to provide event-level context to the generator.</p>
-        </article>
-        <article>
-          <span>04</span>
-          <h3>Decoder Conditioning</h3>
-          <p>Feed saliency-consistent signals into the captioning decoder, aligning what the model segments, retrieves, and describes.</p>
-        </article>
+    <section class="section" id="contributions">
+      <div class="container">
+        <p class="section-kicker">Contributions</p>
+        <h2>A Unified Saliency-Based Design</h2>
+        <div class="cards four">
+          <article class="card compact"><strong>Supervised Saliency</strong><span>Learn saliency directly from ground-truth event annotations.</span></article>
+          <article class="card compact"><strong>Unified Signal</strong><span>Use the same saliency for retrieval and generation.</span></article>
+          <article class="card compact"><strong>Event-Aligned Retrieval</strong><span>Generate better retrieval units through saliency-guided OT clustering.</span></article>
+          <article class="card compact"><strong>Strong Performance</strong><span>Achieve state-of-the-art performance on YouCook2 and ViTT.</span></article>
+        </div>
       </div>
     </section>
 
-    <section class="section two-col">
-      <div>
-        <p class="eyebrow">Key Insight</p>
-        <h2>One temporal signal, multiple roles</h2>
-      </div>
-      <div class="insight-box">
-        <p>
-          Instead of treating segmentation, retrieval, and generation as loosely connected stages,
-          STaRC makes saliency the common currency across the pipeline. Better temporal segments provide
-          cleaner retrieval context, and cleaner retrieval context supports stronger dense captions.
-        </p>
+    <section class="section alt" id="results">
+      <div class="container">
+        <p class="section-kicker">Main Results</p>
+        <h2>State-of-the-Art Dense Video Captioning</h2>
+        <div class="metrics">
+          <div><strong>80.53</strong><span>YouCook2 CIDEr</span></div>
+          <div><strong>56.04</strong><span>ViTT CIDEr</span></div>
+          <div><strong>34.34</strong><span>YouCook2 F1</span></div>
+          <div><strong>49.72</strong><span>ViTT Precision</span></div>
+        </div>
+        <div class="figure-grid">
+          <figure class="figure">
+            <img src="assets/images/main_results_captioning.png" alt="Captioning performance table." />
+            <figcaption>Captioning results on YouCook2 and ViTT.</figcaption>
+          </figure>
+          <figure class="figure">
+            <img src="assets/images/main_results_localization.png" alt="Localization performance table." />
+            <figcaption>Localization results on YouCook2 and ViTT.</figcaption>
+          </figure>
+        </div>
       </div>
     </section>
 
-    <section class="section">
-      <p class="eyebrow">Results</p>
-      <h2>Dense captioning performance</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Method</th><th>CIDEr ↑</th><th>METEOR ↑</th><th>SODA_c ↑</th><th>BLEU4 ↑</th></tr></thead>
-          <tbody>
-            <tr><td>k-means</td><td>75.63</td><td>13.34</td><td>10.46</td><td>6.29</td></tr>
-            <tr><td>Adaptive</td><td>78.19</td><td>13.69</td><td>10.55</td><td>6.57</td></tr>
-            <tr class="ours"><td>SGSR / STaRC</td><td>80.62</td><td>13.88</td><td>10.73</td><td>6.76</td></tr>
-          </tbody>
-        </table>
+    <section class="section" id="analysis">
+      <div class="container">
+        <p class="section-kicker">Why It Works</p>
+        <h2>SGSR and SaliP Are Complementary</h2>
+        <p class="lead">Each component improves the baseline independently, and combining them gives the strongest performance. Additional analyses show that the quality of saliency prompts and the selection of retrieval segments directly affect captioning performance.</p>
+        <div class="figure-grid">
+          <figure class="figure">
+            <img src="assets/images/component_ablation.png" alt="Component ablation table." />
+            <figcaption>SGSR and SaliP together improve CIDEr by +14.24 over the Vid2Seq baseline.</figcaption>
+          </figure>
+          <figure class="figure">
+            <img src="assets/images/prompt_anchor_ablation.png" alt="Anchor selection and saliency prompt ablation figure." />
+            <figcaption>Anchor/top-k analysis and saliency prompt corruption study.</figcaption>
+          </figure>
+        </div>
       </div>
-      <p class="note">Edit the table if your final camera-ready numbers differ.</p>
     </section>
 
-    <section class="section citation">
-      <p class="eyebrow">Citation</p>
-      <h2>BibTeX</h2>
-      <pre><code>@inproceedings{choi2026starc,
+    <section class="section alt" id="qualitative">
+      <div class="container">
+        <p class="section-kicker">Qualitative Results</p>
+        <h2>Temporally Precise and Semantically Coherent Captions</h2>
+        <p class="lead">STaRC predicts event durations that align closely with ground-truth segments and generates captions that describe the corresponding events coherently.</p>
+        <figure class="figure wide medium">
+          <img src="assets/images/qualitative.png" alt="Qualitative result from YouCook2 validation set." />
+          <figcaption>Figure 5. Example from the YouCook2 validation set.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section" id="citation">
+      <div class="container">
+        <p class="section-kicker">Citation</p>
+        <h2>BibTeX</h2>
+        <pre><code>@article{choi2026follow,
   title={Follow the Saliency: Supervised Saliency for Retrieval-augmented Dense Video Captioning},
-  author={Choi, H. S. and others},
-  booktitle={CVPR},
+  author={Choi, Seunghee and Jeon, MinJu and Oh, Hyunwoo and Lee, Jihwan and Kim, Dong-Jin},
+  journal={arXiv preprint arXiv:2603.11460},
   year={2026}
 }</code></pre>
+      </div>
     </section>
   </main>
 
   <footer>
-    <p>STaRC Project Page · <a href="https://github.com/ermitaju1/STaRC" target="_blank" rel="noreferrer">GitHub</a></p>
+    <div class="container">© STaRC Project Page</div>
   </footer>
 </body>
 </html>
